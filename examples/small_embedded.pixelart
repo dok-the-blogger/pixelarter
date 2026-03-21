@@ -1,0 +1,43 @@
+{
+  "format": "pixelart",
+  "version": 1,
+  "width": 4,
+  "height": 4,
+  "palette_mode": "embedded",
+  "transparent_index": 0,
+  "encoding": "rows",
+  "rows": [
+    [
+      0,
+      0,
+      1,
+      1
+    ],
+    [
+      0,
+      1,
+      2,
+      1
+    ],
+    [
+      1,
+      2,
+      2,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      1
+    ]
+  ],
+  "metadata": {
+    "description": "Small embedded example"
+  },
+  "palette": [
+    "#000000",
+    "#ff0000",
+    "#ffffff"
+  ]
+}
