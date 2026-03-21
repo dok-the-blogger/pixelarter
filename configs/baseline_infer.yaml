@@ -1,0 +1,26 @@
+dataset:
+  data_dir: "data/raw"
+  input_size: 32
+  target_size: 16
+  epoch_length: 1
+
+dataloader:
+  batch_size: 1
+  num_workers: 0
+  shuffle: false
+
+model:
+  name: "baseline_cnn"
+  in_channels: 3
+  out_channels: 3
+  head_type: "rgb"
+
+training:
+  epochs: 1
+  lr: 0.0001
+  device: "cuda"
+  save_dir: "runs/baseline"
+  log_every_n_steps: 1
+
+degradation:
+  enabled: false
