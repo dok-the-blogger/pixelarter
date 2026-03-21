@@ -1,0 +1,30 @@
+{
+  "format": "pixelart",
+  "version": 1,
+  "width": 3,
+  "height": 3,
+  "palette_mode": "builtin",
+  "transparent_index": null,
+  "encoding": "rows",
+  "rows": [
+    [
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      2,
+      1
+    ],
+    [
+      0,
+      1,
+      0
+    ]
+  ],
+  "metadata": {
+    "description": "Small builtin example"
+  },
+  "palette_id": "pxa-16-v1"
+}

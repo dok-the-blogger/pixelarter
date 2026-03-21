@@ -58,6 +58,42 @@ To run inference on a single degraded image:
        --checkpoint runs/baseline/best_model.pth
    ```
 
+## The `.pixelart` Format
+
+The `pixelarter` project introduces a canonical representation of pixel art via the `.pixelart` (v1-alpha) JSON format.
+This format stores the **logical pixel grid** (dimensions, palette, and indices) rather than the screen-rendered raster image, avoiding display-related data like scaling.
+
+The format supports two main palette modes:
+- **Builtin (`"builtin"`)**: Uses a predefined project palette (e.g., `pxa-16-v1`).
+- **Embedded (`"embedded"`)**: Extracts and embeds the exact colors directly within the file.
+
+For more details, see the [Format Specification](docs/pixelart_format.md).
+
+### CLI Usage
+
+The project includes a unified CLI to interact with `.pixelart` files and PNG images.
+
+1. **Importing from PNG**:
+   ```bash
+   pixelarter import-png -i input.png -o output.pixelart
+
+   # Or, remap explicitly to a builtin palette:
+   pixelarter import-png -i input.png -o output.pixelart -p pxa-16-v1
+   ```
+
+2. **Exporting to PNG**:
+   ```bash
+   pixelarter export-png -i input.pixelart -o output.png
+
+   # Optional: Render with integer scaling (nearest-neighbor)
+   pixelarter export-png -i input.pixelart -o output.png -s 4
+   ```
+
+3. **Inspecting a `.pixelart` file**:
+   ```bash
+   pixelarter inspect input.pixelart
+   ```
+
 ## Roadmap
 
 See [docs/roadmap.md](docs/roadmap.md) for the development stages and future plans.
