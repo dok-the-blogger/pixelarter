@@ -94,6 +94,24 @@ The project includes a unified CLI to interact with `.pixelart` files and PNG im
    pixelarter inspect input.pixelart
    ```
 
+4. **Inspecting a PNG for Ingest Suitability**:
+   ```bash
+   # Analyzes the PNG and prints an inspection report
+   pixelarter inspect-png input.png
+
+   # For machine-readable output:
+   pixelarter inspect-png input.png --json
+   ```
+
+5. **Ingesting a PNG (Gatekeeper Pipeline)**:
+   ```bash
+   # Evaluates the PNG and creates a .pixelart file ONLY if it is a suitable pixel-art target.
+   # Safe normalizations (like cropping transparent borders and collapsing strict upscales) are automatically applied.
+   pixelarter ingest-png input.png -o output.pixelart --report ingest_report.json
+   ```
+
+   For detailed rules and heuristics about the ingest process, refer to the [Ingest Pipeline Documentation](docs/ingest_pipeline.md).
+
 ## Roadmap
 
 See [docs/roadmap.md](docs/roadmap.md) for the development stages and future plans.
