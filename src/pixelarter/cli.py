@@ -1,9 +1,11 @@
 import argparse
-import sys
 import json
-from pixelarter.formats.png import import_from_png, export_to_png
-from pixelarter.formats.pixelart import save_pixelart, load_pixelart
-from pixelarter.ingest.pipeline import inspect_image, process_ingest, load_image_rgba
+import sys
+
+from pixelarter.formats.pixelart import load_pixelart, save_pixelart
+from pixelarter.formats.png import export_to_png, import_from_png
+from pixelarter.ingest.pipeline import inspect_image, load_image_rgba, process_ingest
+from pixelarter.view.render import get_sidecar_path, render_preview
 
 
 def cmd_import_png(args):
@@ -12,6 +14,11 @@ def cmd_import_png(args):
         img = import_from_png(args.input, palette_id=args.palette)
         save_pixelart(img, args.output)
         print(f"Successfully saved .pixelart to {args.output}")
+        if args.write_preview:
+            preview_img = render_preview(img, scale=8) # Default scale 8 for sidecars
+            sidecar_path = get_sidecar_path(args.output)
+            preview_img.save(sidecar_path, format="PNG")
+            print(f"Successfully saved sidecar preview to {sidecar_path}")
     except Exception as e:
         print(f"Error during import: {e}", file=sys.stderr)
         sys.exit(1)
@@ -31,7 +38,7 @@ def cmd_export_png(args):
 def cmd_inspect(args):
     try:
         img = load_pixelart(args.input)
-        print(f"--- PixelArtImage Inspector ---")
+        print("--- PixelArtImage Inspector ---")
         print(f"File:         {args.input}")
         print(f"Dimensions:   {img.width} x {img.height}")
         print(f"Palette Mode: {img.palette_mode}")
@@ -43,11 +50,11 @@ def cmd_inspect(args):
         if img.transparent_index is not None:
             print(f"Transparency: index {img.transparent_index}")
         else:
-            print(f"Transparency: none")
+            print("Transparency: none")
 
         # Standard encoding info for v1-alpha
-        print(f"Version:      1")
-        print(f"Encoding:     rows")
+        print("Version:      1")
+        print("Encoding:     rows")
 
         if img.metadata:
             print(f"Metadata:     {img.metadata}")
@@ -70,7 +77,7 @@ def cmd_inspect_png(args):
         if args.json:
             print(json.dumps(res.to_dict(), indent=2))
         else:
-            print(f"--- PNG Inspection Report ---")
+            print("--- PNG Inspection Report ---")
             print(f"File:        {args.input}")
             print(f"Verdict:     {res.verdict.value.upper()}")
             print(f"Score:       {res.score}/100")
@@ -128,8 +135,66 @@ def cmd_ingest_png(args):
         if res.applied_normalizations:
             print(f"Applied normalizations: {', '.join(res.applied_normalizations)}")
 
+        if args.write_preview and pixelart is not None:
+            preview_img = render_preview(pixelart, scale=8) # Default scale 8 for sidecars
+            sidecar_path = get_sidecar_path(args.output)
+            preview_img.save(sidecar_path, format="PNG")
+            print(f"Successfully saved sidecar preview to {sidecar_path}")
+
     except Exception as e:
         print(f"Error during ingest: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def cmd_view(args):
+    try:
+        img = load_pixelart(args.input)
+        preview_img = render_preview(
+            img,
+            scale=args.scale,
+            grid=args.grid,
+            bg_mode=args.bg_mode,
+            bg_color=args.bg_color
+        )
+        print(f"Opening viewer for {args.input}...")
+        preview_img.show(title=f"pixelarter view: {args.input}")
+    except Exception as e:
+        print(f"Error viewing .pixelart: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def cmd_preview(args):
+    try:
+        img = load_pixelart(args.input)
+        preview_img = render_preview(
+            img,
+            scale=args.scale,
+            grid=args.grid,
+            bg_mode=args.bg_mode,
+            bg_color=args.bg_color
+        )
+        preview_img.save(args.output, format="PNG")
+        print(f"Successfully exported preview PNG to {args.output} (scale x{args.scale})")
+    except Exception as e:
+        print(f"Error generating preview: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def cmd_preview_sidecar(args):
+    try:
+        img = load_pixelart(args.input)
+        preview_img = render_preview(
+            img,
+            scale=args.scale,
+            grid=args.grid,
+            bg_mode=args.bg_mode,
+            bg_color=args.bg_color
+        )
+        sidecar_path = get_sidecar_path(args.input)
+        preview_img.save(sidecar_path, format="PNG")
+        print(f"Successfully saved sidecar preview to {sidecar_path}")
+    except Exception as e:
+        print(f"Error generating sidecar preview: {e}", file=sys.stderr)
         sys.exit(1)
 
 
@@ -142,6 +207,7 @@ def main():
     parser_import.add_argument("-i", "--input", required=True, help="Input PNG file")
     parser_import.add_argument("-o", "--output", required=True, help="Output .pixelart file")
     parser_import.add_argument("-p", "--palette", help="Builtin palette ID to use (e.g., pxa-16-v1). If not provided, embedded mode is used.")
+    parser_import.add_argument("--write-preview", action="store_true", help="Automatically generate a sidecar preview PNG")
     parser_import.set_defaults(func=cmd_import_png)
 
     # export-png command
@@ -176,7 +242,36 @@ def main():
     parser_ingest_png.add_argument("--max-scale-candidate", type=int, default=6, help="Maximum integer scale to check (default: 6)")
     parser_ingest_png.add_argument("--builtin-palette", help="Remap to a builtin palette ID (e.g., pxa-16-v1)")
     parser_ingest_png.add_argument("--embedded-palette", action="store_true", help="Explicitly use embedded palette (default behavior)")
+    parser_ingest_png.add_argument("--write-preview", action="store_true", help="Automatically generate a sidecar preview PNG")
     parser_ingest_png.set_defaults(func=cmd_ingest_png)
+
+    # view command
+    parser_view = subparsers.add_parser("view", help="View a .pixelart file")
+    parser_view.add_argument("input", help="The .pixelart file to view")
+    parser_view.add_argument("-s", "--scale", type=int, default=8, help="Integer scale factor for viewing (default 8)")
+    parser_view.add_argument("--grid", action="store_true", help="Show grid overlay")
+    parser_view.add_argument("--bg-mode", choices=["transparent", "checker", "solid"], default="transparent", help="Background compositing mode")
+    parser_view.add_argument("--bg-color", help="Background hex color for solid mode (e.g., '#FFFFFF')")
+    parser_view.set_defaults(func=cmd_view)
+
+    # preview command
+    parser_preview = subparsers.add_parser("preview", help="Generate a preview PNG from a .pixelart file")
+    parser_preview.add_argument("input", help="Input .pixelart file")
+    parser_preview.add_argument("-o", "--output", required=True, help="Output PNG file")
+    parser_preview.add_argument("-s", "--scale", type=int, default=1, help="Integer scale factor for the output PNG (default 1)")
+    parser_preview.add_argument("--grid", action="store_true", help="Show grid overlay")
+    parser_preview.add_argument("--bg-mode", choices=["transparent", "checker", "solid"], default="transparent", help="Background compositing mode")
+    parser_preview.add_argument("--bg-color", help="Background hex color for solid mode (e.g., '#FFFFFF')")
+    parser_preview.set_defaults(func=cmd_preview)
+
+    # preview-sidecar command
+    parser_preview_sidecar = subparsers.add_parser("preview-sidecar", help="Generate a sidecar preview PNG next to a .pixelart file")
+    parser_preview_sidecar.add_argument("input", help="Input .pixelart file")
+    parser_preview_sidecar.add_argument("-s", "--scale", type=int, default=8, help="Integer scale factor for the sidecar PNG (default 8)")
+    parser_preview_sidecar.add_argument("--grid", action="store_true", help="Show grid overlay")
+    parser_preview_sidecar.add_argument("--bg-mode", choices=["transparent", "checker", "solid"], default="transparent", help="Background compositing mode")
+    parser_preview_sidecar.add_argument("--bg-color", help="Background hex color for solid mode (e.g., '#FFFFFF')")
+    parser_preview_sidecar.set_defaults(func=cmd_preview_sidecar)
 
     args = parser.parse_args()
     args.func(args)

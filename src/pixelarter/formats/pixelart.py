@@ -1,6 +1,6 @@
 import json
+
 import numpy as np
-from typing import Dict, Any
 
 from pixelarter.models.pixelart import PixelArtImage
 
@@ -34,7 +34,7 @@ def load_pixelart(filepath: str) -> PixelArtImage:
     """
     Deserialize a .pixelart JSON file into a PixelArtImage.
     """
-    with open(filepath, "r", encoding="utf-8") as f:
+    with open(filepath, encoding="utf-8") as f:
         try:
             data = json.load(f)
         except json.JSONDecodeError as e:

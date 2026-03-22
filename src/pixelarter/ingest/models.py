@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import List, Optional, Dict
+
 
 class Verdict(str, Enum):
     ACCEPTED = "accepted"
@@ -11,10 +11,10 @@ class Verdict(str, Enum):
 class PngInspectionResult:
     verdict: Verdict
     score: int  # 0 to 100
-    reasons: List[str] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
-    suggested_normalizations: List[str] = field(default_factory=list)
-    applied_normalizations: List[str] = field(default_factory=list)
+    reasons: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+    suggested_normalizations: list[str] = field(default_factory=list)
+    applied_normalizations: list[str] = field(default_factory=list)
 
     source_width: int = 0
     source_height: int = 0
@@ -24,11 +24,11 @@ class PngInspectionResult:
     unique_colors: int = 0
     effective_colors: int = 0  # e.g., after near-color merge if applied/estimated
 
-    suspected_integer_scale: Optional[int] = None
+    suspected_integer_scale: int | None = None
     alpha_mode_summary: str = "none"  # "none", "binary", "semi-transparent", "dirty"
 
-    output_suitability_flags: Dict[str, bool] = field(default_factory=dict)
-    metadata: Dict[str, any] = field(default_factory=dict)
+    output_suitability_flags: dict[str, bool] = field(default_factory=dict)
+    metadata: dict[str, any] = field(default_factory=dict)
 
     def to_dict(self) -> dict:
         return {

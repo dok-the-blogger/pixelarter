@@ -89,12 +89,32 @@ The project includes a unified CLI to interact with `.pixelart` files and PNG im
    pixelarter export-png -i input.pixelart -o output.png -s 4
    ```
 
-3. **Inspecting a `.pixelart` file**:
+3. **Viewing a `.pixelart` file**:
+   ```bash
+   # Opens the file in the default system viewer with an 8x scale
+   pixelarter view input.pixelart
+
+   # With grid and custom background mode
+   pixelarter view input.pixelart -s 16 --grid --bg-mode checker
+   ```
+
+4. **Generating Previews**:
+   The `.pixelart` format is logical. For sharing or viewing in external tools (like IrfanView), you can generate a **Preview PNG**.
+   ```bash
+   # Generate a preview PNG with scale 4
+   pixelarter preview input.pixelart -o output.png -s 4
+
+   # Generate a sidecar preview (creates input.preview.png)
+   pixelarter preview-sidecar input.pixelart -s 8
+   ```
+   You can also generate sidecars automatically during import or ingest by adding the `--write-preview` flag.
+
+5. **Inspecting a `.pixelart` file**:
    ```bash
    pixelarter inspect input.pixelart
    ```
 
-4. **Inspecting a PNG for Ingest Suitability**:
+6. **Inspecting a PNG for Ingest Suitability**:
    ```bash
    # Analyzes the PNG and prints an inspection report
    pixelarter inspect-png input.png
@@ -103,7 +123,7 @@ The project includes a unified CLI to interact with `.pixelart` files and PNG im
    pixelarter inspect-png input.png --json
    ```
 
-5. **Ingesting a PNG (Gatekeeper Pipeline)**:
+7. **Ingesting a PNG (Gatekeeper Pipeline)**:
    ```bash
    # Evaluates the PNG and creates a .pixelart file ONLY if it is a suitable pixel-art target.
    # Safe normalizations (like cropping transparent borders and collapsing strict upscales) are automatically applied.
@@ -111,6 +131,7 @@ The project includes a unified CLI to interact with `.pixelart` files and PNG im
    ```
 
    For detailed rules and heuristics about the ingest process, refer to the [Ingest Pipeline Documentation](docs/ingest_pipeline.md).
+   For more on the viewing and preview philosophy, see the [Viewing and Previews Documentation](docs/viewing_and_preview.md).
 
 ## Roadmap
 

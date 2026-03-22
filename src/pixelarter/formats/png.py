@@ -1,11 +1,12 @@
-from typing import Optional, List, Tuple
-from PIL import Image
+
 import numpy as np
+from PIL import Image
 
 from pixelarter.models.pixelart import PixelArtImage
 from pixelarter.palette.registry import get_builtin_palette
 
-def hex_to_rgb(hex_color: str) -> Tuple[int, int, int]:
+
+def hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
     """Convert #RRGGBB hex string to (R, G, B) tuple."""
     hex_color = hex_color.lstrip('#')
     return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
@@ -14,7 +15,7 @@ def rgb_to_hex(r: int, g: int, b: int) -> str:
     """Convert (R, G, B) tuple to #RRGGBB hex string."""
     return f"#{r:02x}{g:02x}{b:02x}"
 
-def _build_palette_from_image(img: Image.Image) -> Tuple[List[str], np.ndarray, Optional[int]]:
+def _build_palette_from_image(img: Image.Image) -> tuple[list[str], np.ndarray, int | None]:
     """
     Extract exact unique colors from the image to build an embedded palette.
     Returns (palette_hex_list, indices_array, transparent_index).
@@ -64,7 +65,7 @@ def _build_palette_from_image(img: Image.Image) -> Tuple[List[str], np.ndarray, 
     return palette_hex, indices, transparent_index
 
 
-def _remap_to_builtin_palette(img: Image.Image, palette_id: str) -> Tuple[np.ndarray, Optional[int]]:
+def _remap_to_builtin_palette(img: Image.Image, palette_id: str) -> tuple[np.ndarray, int | None]:
     """
     Remaps an image exactly to a builtin palette.
     Raises ValueError if a color in the image is not found in the builtin palette.
@@ -101,7 +102,7 @@ def _remap_to_builtin_palette(img: Image.Image, palette_id: str) -> Tuple[np.nda
     return indices, transparent_index
 
 
-def import_from_png(filepath: str, palette_id: Optional[str] = None) -> PixelArtImage:
+def import_from_png(filepath: str, palette_id: str | None = None) -> PixelArtImage:
     """
     Import a PNG image into a PixelArtImage.
     If palette_id is provided, remaps to the builtin palette.

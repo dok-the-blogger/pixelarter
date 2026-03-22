@@ -1,9 +1,8 @@
-import numpy as np
-from PIL import Image
-from typing import Tuple, List, Optional, Dict
-from collections import Counter
 
-def analyze_alpha(img_rgba: np.ndarray) -> Tuple[str, bool]:
+import numpy as np
+
+
+def analyze_alpha(img_rgba: np.ndarray) -> tuple[str, bool]:
     """
     Analyze the alpha channel.
     Returns:
@@ -40,7 +39,7 @@ def analyze_alpha(img_rgba: np.ndarray) -> Tuple[str, bool]:
         # Only a few semi-transparent, likely dirty anti-aliasing on edges
         return "dirty", True
 
-def analyze_colors(img_rgba: np.ndarray) -> Tuple[int, int, float, float]:
+def analyze_colors(img_rgba: np.ndarray) -> tuple[int, int, float, float]:
     """
     Analyze colors.
     Returns:
@@ -77,7 +76,7 @@ def analyze_colors(img_rgba: np.ndarray) -> Tuple[int, int, float, float]:
 
     return num_unique, num_rare, unique_ratio, rare_ratio
 
-def detect_integer_scale(img_rgba: np.ndarray, max_scale: int = 6) -> Tuple[Optional[int], bool]:
+def detect_integer_scale(img_rgba: np.ndarray, max_scale: int = 6) -> tuple[int | None, bool]:
     """
     Detect if the image is an integer upscale.
     Returns:

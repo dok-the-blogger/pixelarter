@@ -1,17 +1,18 @@
-import numpy as np
 from dataclasses import dataclass, field
-from typing import Optional, List, Dict
+
+import numpy as np
+
 
 @dataclass
 class PixelArtImage:
     width: int
     height: int
     palette_mode: str  # 'builtin' or 'embedded'
-    palette_id: Optional[str]
-    palette: Optional[List[str]]  # List of hex colors (e.g., '#FF0000')
-    transparent_index: Optional[int]
+    palette_id: str | None
+    palette: list[str] | None  # List of hex colors (e.g., '#FF0000')
+    transparent_index: int | None
     indices: np.ndarray  # 2D array of logical palette indices
-    metadata: Dict = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
     def __post_init__(self):
         # Validate indices shape
