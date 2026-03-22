@@ -1,12 +1,12 @@
-import pytest
+
 import numpy as np
-import os
+import pytest
 from PIL import Image
 
+from pixelarter.formats.pixelart import load_pixelart, save_pixelart
+from pixelarter.formats.png import export_to_png, import_from_png
 from pixelarter.models.pixelart import PixelArtImage
 from pixelarter.palette.registry import get_builtin_palette, is_builtin_palette
-from pixelarter.formats.pixelart import save_pixelart, load_pixelart
-from pixelarter.formats.png import import_from_png, export_to_png
 
 
 def test_pixelart_image_validation():

@@ -1,7 +1,8 @@
-import numpy as np
-from typing import Tuple, List
 
-def crop_transparent_border(img_rgba: np.ndarray) -> Tuple[np.ndarray, bool]:
+import numpy as np
+
+
+def crop_transparent_border(img_rgba: np.ndarray) -> tuple[np.ndarray, bool]:
     """
     Crops the fully transparent border around the image.
     Returns:
@@ -32,7 +33,7 @@ def crop_transparent_border(img_rgba: np.ndarray) -> Tuple[np.ndarray, bool]:
     cropped_img = img_rgba[min_y:max_y+1, min_x:max_x+1]
     return cropped_img.copy(), True
 
-def collapse_integer_upscale(img_rgba: np.ndarray, scale: int) -> Tuple[np.ndarray, bool]:
+def collapse_integer_upscale(img_rgba: np.ndarray, scale: int) -> tuple[np.ndarray, bool]:
     """
     Collapses an integer upscale by taking the exact top-left pixel of each block,
     or the modal pixel if strictly required. We'll use the top-left pixel
@@ -52,7 +53,7 @@ def collapse_integer_upscale(img_rgba: np.ndarray, scale: int) -> Tuple[np.ndarr
 
     return collapsed_img, True
 
-def apply_near_color_merge(img_rgba: np.ndarray, threshold: float = 10.0) -> Tuple[np.ndarray, bool]:
+def apply_near_color_merge(img_rgba: np.ndarray, threshold: float = 10.0) -> tuple[np.ndarray, bool]:
     """
     Merges very similar colors using a simple Euclidean distance threshold.
     It maps colors to the most frequent color in the cluster.
@@ -122,7 +123,7 @@ def apply_near_color_merge(img_rgba: np.ndarray, threshold: float = 10.0) -> Tup
 
     return merged_img.reshape(img_rgba.shape), True
 
-def binarize_alpha(img_rgba: np.ndarray, threshold: int = 128) -> Tuple[np.ndarray, bool]:
+def binarize_alpha(img_rgba: np.ndarray, threshold: int = 128) -> tuple[np.ndarray, bool]:
     """
     Binarizes the alpha channel.
     Returns:

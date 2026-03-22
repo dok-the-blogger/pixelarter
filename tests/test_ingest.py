@@ -1,11 +1,11 @@
 import os
-import json
-import pytest
+
 import numpy as np
 from PIL import Image
 
 from pixelarter.ingest.models import Verdict
 from pixelarter.ingest.pipeline import inspect_image, process_ingest
+
 
 def create_test_image(filepath, mode="clean_pixelart"):
     if mode == "clean_pixelart":

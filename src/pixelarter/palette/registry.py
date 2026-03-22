@@ -1,4 +1,3 @@
-from typing import List, Dict
 
 # Standard DawnBringer 16 palette
 DB16 = [
@@ -20,12 +19,12 @@ DB32 = [
     "#d95763", "#d77bba", "#8f974a", "#8a6f30",
 ]
 
-_BUILTIN_PALETTES: Dict[str, List[str]] = {
+_BUILTIN_PALETTES: dict[str, list[str]] = {
     "pxa-16-v1": DB16,
     "pxa-32-v1": DB32,
 }
 
-def get_builtin_palette(palette_id: str) -> List[str]:
+def get_builtin_palette(palette_id: str) -> list[str]:
     """
     Retrieve a builtin palette by its ID.
     Raises ValueError if the palette_id is not found.

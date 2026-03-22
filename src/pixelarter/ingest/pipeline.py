@@ -1,13 +1,19 @@
+
 import numpy as np
 from PIL import Image
-from typing import Tuple, Dict, Any, Optional
 
-from pixelarter.models.pixelart import PixelArtImage
 from pixelarter.formats.png import _build_palette_from_image, _remap_to_builtin_palette
+from pixelarter.models.pixelart import PixelArtImage
 
+from .analyzer import analyze_alpha, analyze_colors, analyze_discreteness, detect_integer_scale
 from .models import PngInspectionResult, Verdict
-from .analyzer import analyze_alpha, analyze_colors, detect_integer_scale, analyze_discreteness
-from .normalizer import crop_transparent_border, collapse_integer_upscale, apply_near_color_merge, binarize_alpha
+from .normalizer import (
+    apply_near_color_merge,
+    binarize_alpha,
+    collapse_integer_upscale,
+    crop_transparent_border,
+)
+
 
 def load_image_rgba(filepath: str) -> np.ndarray:
     """Load image and ensure it's RGBA numpy array."""
@@ -131,7 +137,7 @@ def process_ingest(filepath: str,
                    allow_near_color_merge: bool = False,
                    binarize_alpha_flag: bool = False,
                    force: bool = False,
-                   palette_id: Optional[str] = None) -> Tuple[Optional[PixelArtImage], PngInspectionResult]:
+                   palette_id: str | None = None) -> tuple[PixelArtImage | None, PngInspectionResult]:
     """
     Main ingest pipeline.
     Reads image, inspects, applies normalizations, and converts to PixelArtImage.
